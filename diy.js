@@ -1,21 +1,30 @@
 var html = '';
-html += '<button class="diy export" data-type="json">导出json</button>',
-html += '<button class="diy export" data-type="md">导出md</button>',
-html += '<button class="diy export" data-type="km">导出km</button>',
-html += '<button class="diy">',
+html += '<a class="diy export" data-type="json">导出json</a>',
+html += '<a class="diy export" data-type="md">导出md</a>',
+html += '<a class="diy export" data-type="km">导出km</a>',
+html += '<button class="diy input">',
 html += '导入<input type="file" id="fileInput">',
 html += '</button>';
-	
+
 $('.editor-title').append(html);
 $('.diy').css({
-	'height': '30px',
-	'line-height': '30px',
-	'margin-top': '5px',
+	// 'height': '30px',
+	// 'line-height': '30px',
+	'margin-top': '0px',
 	'float': 'right',
-	'color': '#333',
+	'background-color': '#fff',
+	'min-width': '60px',
+	'text-decoration': 'none',
+	color: '#999',
+	'padding': '0 10px',
+	border: 'none',
+	'border-right': '1px solid #ccc',
+});
+$('.input').css({
 	'overflow': 'hidden',
-	'position': 'relative'
+	'position': 'relative',
 }).find('input').css({
+	cursor: 'pointer',
 	position: 'absolute',
 	top: 0,
 	bottom: 0,
@@ -23,11 +32,13 @@ $('.diy').css({
 	right: 0,
 	display: 'inline-block',
 	opacity: 0
-});;
-// 导出
-$(document).on('click', '.export', function(event) {
+});
+$('.export').css('cursor','not-allowed');
+
+$(document).on('mouseover', '.export', function(event) {
 	event.preventDefault();
-	var type = $(this).data('type'),
+	var $this = $(this),
+			type = $this.data('type'),
 			exportType;
 	switch(type){
 		case 'km':
@@ -40,6 +51,7 @@ $(document).on('click', '.export', function(event) {
 			exportType = type;
 			break;
 	}
+
 	editor.minder.exportData(exportType).then(function(content){
 		switch(exportType){
 			case 'json':
@@ -49,16 +61,17 @@ $(document).on('click', '.export', function(event) {
 				console.log(content);
 				break;
 		}
-		var aLink = document.createElement('a'),
-				evt = document.createEvent("HTMLEvents"),
-				blob = new Blob([content]);
-
-		evt.initEvent("click", false, false);//initEvent 不加后两个参数在FF下会报错, 感谢 Barret Lee 的反馈
+		$this.css('cursor', 'pointer');
+		var blob = new Blob([content]),
+				url = URL.createObjectURL(blob);
+		var aLink = $this[0];
+		aLink.href = url;
 		aLink.download = $('#node_text1').text()+'.'+type;
-		aLink.href = URL.createObjectURL(blob);
-		aLink.dispatchEvent(evt);
 	});
-});
+}).on('mouseout', '.export', function(event) {
+	event.preventDefault();
+	$(this).css('cursor', 'not-allowed');
+});;
 
 // 导入
 window.onload = function() {
