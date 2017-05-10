@@ -109,5 +109,11 @@ window.onload = function() {
 			oldData = editor.minder.exportJson();
 		}
 		reader.readAsText(file);
+	}).on('click', '.export', function(event) {
+		// 禁止点击状态下取消跳转
+		var $this = $(this);
+		if($this.css('cursor') == 'not-allowed'){
+			event.preventDefault();
+		}
 	});
 }
