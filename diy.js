@@ -5,6 +5,7 @@ html += '<a class="diy export" data-type="km">导出km</a>',
 html += '<button class="diy input">',
 html += '导入<input type="file" id="fileInput">',
 html += '</button>';
+	var oldData;
 
 $('.editor-title').append(html);
 $('.diy').css({
@@ -102,6 +103,10 @@ window.onload = function() {
 				console.log(data)
 				$(fileInput).val('');
 			});
+		if(JSON.stringify(oldData) == JSON.stringify(editor.minder.exportJson())){
+			return;
+		}else{
+			oldData = editor.minder.exportJson();
 		}
 		reader.readAsText(file);
 	});
